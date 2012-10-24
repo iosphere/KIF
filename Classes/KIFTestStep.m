@@ -620,7 +620,6 @@ typedef CGPoint KIFDisplacement;
 + (NSArray *)stepsToChoosePhotoInAlbum:(NSString *)albumName atRow:(NSInteger)row column:(NSInteger)column;
 {
     NSMutableArray *steps = [NSMutableArray array];
-    [steps addObject:[KIFTestStep stepToTapViewWithAccessibilityLabel:@"Choose Photo"]];
     
     // This is basically the same as the step to tap with an accessibility label except that the accessibility labels for the albums have the number of photos appended to the end, such as "My Photos (3)." This means that we have to do a prefix match rather than an exact match.
     NSString *description = [NSString stringWithFormat:@"Select the \"%@\" photo album", albumName];
@@ -662,9 +661,6 @@ typedef CGPoint KIFDisplacement;
     thumbnailCenter.x = thumbnailMargin + (MAX(0, column - 1) * (thumbnailSize.width + thumbnailMargin)) + thumbnailSize.width / 2.0;
     thumbnailCenter.y = headerHeight + thumbnailMargin + (MAX(0, row - 1) * (thumbnailSize.height + thumbnailMargin)) + thumbnailSize.height / 2.0;
     [steps addObject:[KIFTestStep stepToTapScreenAtPoint:thumbnailCenter]];
-    
-    // Dismiss the resize UI
-    [steps addObject:[KIFTestStep stepToTapViewWithAccessibilityLabel:@"Choose"]];
     
     return steps;
 }

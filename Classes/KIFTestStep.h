@@ -441,5 +441,6 @@ typedef enum {
  @result A configured test step.
  */
 + (id)stepToWaitForFirstResponderWithAccessibilityLabel:(NSString *)label;
++ (UIAccessibilityElement *)_accessibilityElementWithLabel:(NSString *)label accessibilityValue:(NSString *)value tappable:(BOOL)mustBeTappable traits:(UIAccessibilityTraits)traits error:(out NSError **)error;
 
 @end

@@ -21,6 +21,25 @@ MAKE_CATEGORIES_LOADABLE(UIScrollView_KIFAdditions)
 - (void)scrollViewToVisible:(UIView *)view animated:(BOOL)animated;
 {
     BOOL needsUpdate = NO;
+
+    if ([self isKindOfClass:[UITableView class]]) {
+        UITableView *tableView = (UITableView *)self;
+        UIView *aSubview = view;
+        while (aSubview != self && aSubview != nil) {
+            aSubview = aSubview.superview;
+
+            if (aSubview == tableView.tableFooterView) {
+                return;
+            }
+
+            if (aSubview == tableView.tableHeaderView) {
+                [self scrollRectToVisible:CGRectZero animated:animated];
+                CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
+                return;
+            }
+        }
+    }
+
     CGRect frame = [self.window convertRect:self.frame fromView:self.superview];
     
     CGRect viewFrame = [self.window convertRect:view.frame fromView:view.superview];
@@ -28,7 +47,12 @@ MAKE_CATEGORIES_LOADABLE(UIScrollView_KIFAdditions)
     CGFloat viewMaxY = viewFrame.origin.y + viewFrame.size.height;
     CGFloat scrollViewMaxX = frame.origin.x + frame.size.width;
     CGFloat scrollViewMaxY = frame.origin.y + frame.size.height;
-    
+
+    UIWindow *keyboardWindow = [[UIApplication sharedApplication] keyboardWindow];
+    if (![keyboardWindow isHidden]) {
+        scrollViewMaxY -= 216;
+    }
+
     CGPoint offsetPoint = self.contentOffset;
     if (viewMaxX > scrollViewMaxX) {
         // The view is to the right of the view port, so scroll it just into view

@@ -246,7 +246,11 @@ static void releaseInstance()
     [self _scheduleCurrentTestStep];
 }
 
-- (void)_testingDidFinish
+- (void)_testingDidFinish {
+    [self testingDidFinish];
+}
+
+- (void)testingDidFinish
 {
     [self _logTestingDidFinish];
     self.testing = NO;
@@ -458,6 +462,10 @@ static void releaseInstance()
     }
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
+
+#if !TARGET_IPHONE_SIMULATOR
+    outputPath = [NSString stringWithFormat:@"%@%@",NSTemporaryDirectory(),outputPath];
+#endif
     
     outputPath = [outputPath stringByExpandingTildeInPath];
     outputPath = [outputPath stringByAppendingPathComponent:[step.description stringByReplacingOccurrencesOfString:@"/" withString:@"_"]];

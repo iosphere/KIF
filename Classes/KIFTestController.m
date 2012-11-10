@@ -483,8 +483,9 @@ static void releaseInstance()
 {
     static NSFileHandle *fileHandle = nil;
     if (!fileHandle) {
-        NSString *logsDirectory = [[NSFileManager defaultManager] createUserDirectory:NSLibraryDirectory];
-        
+        NSString *logsDirectory = [[[NSProcessInfo processInfo] environment] objectForKey:@"KIF_SCREENSHOTS"];
+        [logsDirectory stringByAppendingPathComponent:@".."];
+
         if (logsDirectory) {
             logsDirectory = [logsDirectory stringByAppendingPathComponent:@"Logs"];
         }
@@ -492,12 +493,7 @@ static void releaseInstance()
             logsDirectory = nil;
         }
         
-        NSString *dateString = [NSDateFormatter localizedStringFromDate:[NSDate date] dateStyle:NSDateFormatterMediumStyle timeStyle:NSDateFormatterLongStyle];
-        dateString = [dateString stringByReplacingOccurrencesOfString:@"/" withString:@"."];
-        dateString = [dateString stringByReplacingOccurrencesOfString:@":" withString:@"."];
-        NSString *fileName = [NSString stringWithFormat:@"KIF Tests %@.log", dateString];
-        
-        NSString *logFilePath = [logsDirectory stringByAppendingPathComponent:fileName];
+        NSString *logFilePath = [logsDirectory stringByAppendingPathComponent:@"current.log"];
         
         if (![[NSFileManager defaultManager] fileExistsAtPath:logFilePath]) {
             [[NSFileManager defaultManager] createFileAtPath:logFilePath contents:[NSData data] attributes:nil];

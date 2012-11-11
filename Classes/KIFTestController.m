@@ -484,25 +484,22 @@ static void releaseInstance()
     static NSFileHandle *fileHandle = nil;
     if (!fileHandle) {
         NSString *logsDirectory = [[[NSProcessInfo processInfo] environment] objectForKey:@"KIF_SCREENSHOTS"];
-        [logsDirectory stringByAppendingPathComponent:@".."];
-
-        if (logsDirectory) {
-            logsDirectory = [logsDirectory stringByAppendingPathComponent:@"Logs"];
-        }
-        if (![[NSFileManager defaultManager] recursivelyCreateDirectory:logsDirectory]) {
-            logsDirectory = nil;
-        }
+        [logsDirectory stringByDeletingLastPathComponent];
         
         NSString *logFilePath = [logsDirectory stringByAppendingPathComponent:@"current.log"];
-        
-        if (![[NSFileManager defaultManager] fileExistsAtPath:logFilePath]) {
-            [[NSFileManager defaultManager] createFileAtPath:logFilePath contents:[NSData data] attributes:nil];
+
+        if ([[NSFileManager defaultManager] fileExistsAtPath:logFilePath]) {
+            [[NSFileManager defaultManager] removeItemAtPath:logFilePath error:nil];
         }
         
+        [[NSFileManager defaultManager] createFileAtPath:logFilePath contents:[NSData data] attributes:nil];
+
         fileHandle = [[NSFileHandle fileHandleForWritingAtPath:logFilePath] retain];
         
         if (fileHandle) {
             NSLog(@"Logging KIF test activity to %@", logFilePath);
+        } else {
+            NSLog(@"failed to open KIF log file at path %@", logFilePath);
         }
     }
     

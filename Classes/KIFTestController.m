@@ -484,7 +484,7 @@ static void releaseInstance()
     static NSFileHandle *fileHandle = nil;
     if (!fileHandle) {
         NSString *logsDirectory = [NSTemporaryDirectory() stringByAppendingPathComponent:[[[NSProcessInfo processInfo] environment] objectForKey:@"KIF_SCREENSHOTS"]];
-        [logsDirectory stringByDeletingLastPathComponent];
+        logsDirectory = [logsDirectory stringByDeletingLastPathComponent];
         
         NSString *logFilePath = [logsDirectory stringByAppendingPathComponent:@"current.log"];
 

@@ -329,7 +329,7 @@ static void releaseInstance()
     switch (result) {
         case KIFTestStepResultFailure: {
             [self _logDidFailStep:self.currentStep duration:currentStepDuration error:error];
-            [self _writeScreenshotForStep:self.currentStep withPrefix:@"FAILED_"];
+            [self _writeScreenshotForStep:self.currentStep withPrefix:[NSString stringWithFormat:@"%c-%d FAILED_", (char)[self.scenarios indexOfObject:self.currentScenario]+41,[self.currentScenario.steps indexOfObjectIdenticalTo:self.currentStep]]];
             [self.currentStep cleanUp];
             
             self.currentScenario = [self _nextScenarioAfterResult:result];
@@ -340,7 +340,7 @@ static void releaseInstance()
             break;
         }
         case KIFTestStepResultSuccess: {
-            [self _writeScreenshotForStep:self.currentStep];
+            [self _writeScreenshotForStep:self.currentStep withPrefix:[NSString stringWithFormat:@"%c-%d ", (char)[self.scenarios indexOfObject:self.currentScenario]+41,[self.currentScenario.steps indexOfObjectIdenticalTo:self.currentStep]]];
             [self _logDidPassStep:self.currentStep duration:currentStepDuration];
             [self.currentStep cleanUp];
             

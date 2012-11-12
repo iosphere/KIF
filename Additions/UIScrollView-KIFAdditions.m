@@ -20,6 +20,7 @@ MAKE_CATEGORIES_LOADABLE(UIScrollView_KIFAdditions)
 
 - (void)scrollViewToVisible:(UIView *)view animated:(BOOL)animated;
 {
+    return;
     BOOL needsUpdate = NO;
 
     if ([self isKindOfClass:[UITableView class]]) {
@@ -50,7 +51,7 @@ MAKE_CATEGORIES_LOADABLE(UIScrollView_KIFAdditions)
 
     UIWindow *keyboardWindow = [[UIApplication sharedApplication] keyboardWindow];
     if (![keyboardWindow isHidden]) {
-        scrollViewMaxY -= 216;
+        scrollViewMaxY -= CGRectGetHeight(keyboardWindow.frame);
     }
 
     CGPoint offsetPoint = self.contentOffset;
@@ -73,7 +74,7 @@ MAKE_CATEGORIES_LOADABLE(UIScrollView_KIFAdditions)
     }
     
     if (needsUpdate) {
-        offsetPoint = [self.window convertPoint:offsetPoint toView:self.superview];
+        offsetPoint = [self.window convertPoint:offsetPoint toView:self];
         [self setContentOffset:offsetPoint animated:animated];
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.2, false);
     }

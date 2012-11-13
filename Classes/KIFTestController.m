@@ -462,10 +462,8 @@ static void releaseInstance()
     }
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-
-#if !TARGET_IPHONE_SIMULATOR
+    
     outputPath = [NSString stringWithFormat:@"%@%@",NSTemporaryDirectory(),outputPath];
-#endif
     
     outputPath = [outputPath stringByExpandingTildeInPath];
     outputPath = [outputPath stringByAppendingPathComponent:[step.description stringByReplacingOccurrencesOfString:@"/" withString:@"_"]];

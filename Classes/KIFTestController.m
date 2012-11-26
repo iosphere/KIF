@@ -10,6 +10,7 @@
 #import "KIFTestController.h"
 #import "KIFTestScenario.h"
 #import "KIFTestStep.h"
+#import "SSZipArchive.h"
 #import "NSFileManager-KIFAdditions.h"
 #import <QuartzCore/QuartzCore.h>
 #import <dlfcn.h>
@@ -246,12 +247,46 @@ static void releaseInstance()
     [self _scheduleCurrentTestStep];
 }
 
-- (void)_testingDidFinish {
-    [self testingDidFinish];
+- (void)_uploadResultsToServer {
+    NSLog(@"didFinishTesting");
+    if ([[[NSProcessInfo processInfo] environment] objectForKey:@"ISH_CALLBACK_URL"]) {
+        [self performSelector:@selector(_logTestingDidFinish)];
+
+        NSString *zipFile = [NSTemporaryDirectory() stringByAppendingString:@"current.zip"];
+
+        NSString *zippedPath = zipFile;
+
+        NSString *dumpBasePath = [NSString stringWithFormat:@"%@/testing/",NSTemporaryDirectory()];
+        NSString *targetDir = [dumpBasePath stringByAppendingPathComponent:[[NSUserDefaults standardUserDefaults] objectForKey:@"ISHDebugUUID"]];
+
+        NSArray *paths = [[NSFileManager defaultManager] subpathsAtPath:targetDir];
+
+        SSZipArchive *zipArchive = [[SSZipArchive alloc] initWithPath:zippedPath];
+        [zipArchive open];
+
+        for (NSString *path in paths) {
+            if (![path pathExtension]) {
+                continue;
+            }
+            NSData *data = [NSData dataWithContentsOfFile:[targetDir stringByAppendingPathComponent:path]];
+            [zipArchive writeData:data filename:path];
+        }
+
+        [zipArchive close];
+
+        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[[[NSProcessInfo processInfo] environment] objectForKey:@"ISH_CALLBACK_URL"]]];
+        [request setHTTPMethod:@"POST"];
+        [request setValue:@"application/octet; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
+        [request setHTTPBody:[NSData dataWithContentsOfFile:zipFile]];
+
+        [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+    }
 }
 
-- (void)testingDidFinish
+- (void)_testingDidFinish
 {
+    [self _uploadResultsToServer];
+
     [self _logTestingDidFinish];
     self.testing = NO;
     

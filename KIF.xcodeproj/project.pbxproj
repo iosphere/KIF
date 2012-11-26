@@ -44,7 +44,7 @@
 		C890C2D216639AB400837CAB /* SSZipArchive.m in Sources */ = {isa = PBXBuildFile; fileRef = C890C2C716639AB400837CAB /* SSZipArchive.m */; };
 		C890C2DA1663AE7900837CAB /* KIFTestStep+usefulSteps.h in Headers */ = {isa = PBXBuildFile; fileRef = C890C2D41663AE7900837CAB /* KIFTestStep+usefulSteps.h */; };
 		C890C2DB1663AE7900837CAB /* KIFTestStep+usefulSteps.m in Sources */ = {isa = PBXBuildFile; fileRef = C890C2D51663AE7900837CAB /* KIFTestStep+usefulSteps.m */; };
-		C890C2DC1663AE7900837CAB /* ISHKIFHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = C890C2D61663AE7900837CAB /* ISHKIFHelpers.h */; };
+		C890C2DC1663AE7900837CAB /* ISHKIFHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = C890C2D61663AE7900837CAB /* ISHKIFHelpers.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C890C2DD1663AE7900837CAB /* UIView+testHelpers.h in Headers */ = {isa = PBXBuildFile; fileRef = C890C2D71663AE7900837CAB /* UIView+testHelpers.h */; };
 		C890C2DE1663AE7900837CAB /* UIView+testHelpers.m in Sources */ = {isa = PBXBuildFile; fileRef = C890C2D81663AE7900837CAB /* UIView+testHelpers.m */; };
 		C890C2E31663B4A400837CAB /* libz.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C890C2E21663B4A400837CAB /* libz.dylib */; };
@@ -92,7 +92,7 @@
 		C890C2C716639AB400837CAB /* SSZipArchive.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SSZipArchive.m; sourceTree = "<group>"; };
 		C890C2D41663AE7900837CAB /* KIFTestStep+usefulSteps.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "KIFTestStep+usefulSteps.h"; sourceTree = "<group>"; };
 		C890C2D51663AE7900837CAB /* KIFTestStep+usefulSteps.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "KIFTestStep+usefulSteps.m"; sourceTree = "<group>"; };
-		C890C2D61663AE7900837CAB /* ISHKIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ISHKIFHelpers.h; sourceTree = "<group>"; };
+		C890C2D61663AE7900837CAB /* ISHKIFHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ISHKIFHelpers.h; path = ../Public/ISHKIFHelpers.h; sourceTree = "<group>"; };
 		C890C2D71663AE7900837CAB /* UIView+testHelpers.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+testHelpers.h"; sourceTree = "<group>"; };
 		C890C2D81663AE7900837CAB /* UIView+testHelpers.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+testHelpers.m"; sourceTree = "<group>"; };
 		C890C2E21663B4A400837CAB /* libz.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.dylib; path = usr/lib/libz.dylib; sourceTree = SDKROOT; };

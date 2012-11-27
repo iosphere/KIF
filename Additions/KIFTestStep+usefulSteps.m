@@ -11,6 +11,7 @@
 #import "UIView-KIFAdditions.h"
 #import "UIView+testHelpers.h"
 #import "UIAccessibilityElement-KIFAdditions.h"
+#import "UIApplication-KIFAdditions.h"
 
 
 @implementation KIFTestStep (usefulSteps)
@@ -329,4 +330,35 @@
     return [KIFTestStep stepToWaitForTimeInterval:0.5 description:@"WAIT FOR THINGS TO SETTLE FOR 0.5 secs"];
 }
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
++ (id)stepToTapCellInCollectionViewWithAccessibilityLabel:(NSString*)collectionViewLabel atIndexPath:(NSIndexPath *)indexPath {
+    NSString *description = [NSString stringWithFormat:@"Step to tap row %d in collectionView with label %@", [indexPath item], collectionViewLabel];
+    return [KIFTestStep stepWithDescription:description executionBlock:^(KIFTestStep *step, NSError **error) {
+        UIAccessibilityElement *element = [[UIApplication sharedApplication] accessibilityElementWithLabel:collectionViewLabel];
+        KIFTestCondition(element, error, @"View with label %@ not found", collectionViewLabel);
+        UICollectionView *collectionView = (UICollectionView*)[UIAccessibilityElement viewContainingAccessibilityElement:element];
+        
+        KIFTestCondition([collectionView isKindOfClass:[UICollectionView class]], error, @"Specified view is not a UICollectionView");
+        
+        KIFTestCondition(collectionView, error, @"Table view with label %@ not found", collectionViewLabel);
+        
+        UICollectionViewCell *cell = [collectionView cellForItemAtIndexPath:indexPath];
+        if (!cell) {
+            KIFTestCondition([indexPath section] < [collectionView numberOfSections], error, @"Section %d is not found in '%@' table view", [indexPath section], collectionViewLabel);
+            KIFTestCondition([indexPath item] < [collectionView numberOfItemsInSection:[indexPath section]], error, @"Row %d is not found in section %d of '%@' table view", [indexPath item], [indexPath section], collectionViewLabel);
+            [collectionView scrollToItemAtIndexPath:indexPath
+                                   atScrollPosition:UICollectionViewScrollPositionCenteredVertically
+                                           animated:YES];
+            [[NSRunLoop currentRunLoop] runUntilDate:[NSDate dateWithTimeIntervalSinceNow:0.25]];
+            cell = [collectionView cellForItemAtIndexPath:indexPath];
+        }
+        KIFTestCondition(cell, error, @"Collection view cell at index path %@ not found", indexPath);
+        
+        CGRect cellFrame = [cell.contentView convertRect:[cell.contentView frame] toView:collectionView];
+        [collectionView tapAtPoint:CGPointCenteredInRect(cellFrame)];
+        
+        return KIFTestStepResultSuccess;
+    }];
+}
+#endif
 @end

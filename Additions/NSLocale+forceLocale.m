@@ -11,7 +11,7 @@
 @implementation NSLocale (forceLocale)
 
 + (id)currentLocale {
-    return [[NSLocale alloc] initWithLocaleIdentifier:[[[NSProcessInfo processInfo] environment] objectForKey:@"ISH_LOCALE"]];
+    return [[[NSLocale alloc] initWithLocaleIdentifier:[[[NSProcessInfo processInfo] environment] objectForKey:@"ISH_LOCALE"]] autorelease];
 }
 
 + (id)autoupdatingCurrentLocale {

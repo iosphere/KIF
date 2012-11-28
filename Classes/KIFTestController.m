@@ -280,6 +280,7 @@ static void releaseInstance()
         [request setHTTPBody:[NSData dataWithContentsOfFile:zipFile]];
 
         [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:nil];
+        [zipArchive release];
     }
 }
 

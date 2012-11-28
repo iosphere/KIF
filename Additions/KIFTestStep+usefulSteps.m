@@ -12,7 +12,7 @@
 #import "UIView+testHelpers.h"
 #import "UIAccessibilityElement-KIFAdditions.h"
 #import "UIApplication-KIFAdditions.h"
-
+#import "UIBarButtonItem+KIFAdditions.h"
 
 @implementation KIFTestStep (usefulSteps)
 
@@ -362,6 +362,15 @@
 }
 #endif
 
++ (id)stepToTapBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item {
+    NSString *barButtonTitle = [UIBarButtonItem accessibilityLabelForBarButtonWithSystemItem:item];
+    return [KIFTestStep stepToTapViewWithAccessibilityLabel:barButtonTitle];
+}
+
++ (id)stepToWaitForBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item {
+    NSString *barButtonTitle = [UIBarButtonItem accessibilityLabelForBarButtonWithSystemItem:item];
+    return [KIFTestStep stepToWaitForViewWithAccessibilityLabel:barButtonTitle];
+}
 
 + (id)stepToDismissViewController {
     __block BOOL completed = NO;

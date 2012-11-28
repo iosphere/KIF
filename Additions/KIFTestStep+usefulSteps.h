@@ -35,5 +35,7 @@
 + (id)stepToTapCellInCollectionViewWithAccessibilityLabel:(NSString*)collectionViewLabel atIndexPath:(NSIndexPath *)indexPath;
 #endif
 
++ (id)stepToTapBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item;
++ (id)stepToWaitForBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item;
 + (id)stepToDismissViewController;
 @end

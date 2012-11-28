@@ -361,4 +361,26 @@
     }];
 }
 #endif
+
+
++ (id)stepToDismissViewController {
+    KIFTestStep *scrollStep = nil;
+    __block BOOL completed = NO;
+    __block BOOL didDismiss = NO;
+    scrollStep = [KIFTestStep stepWithDescription:@"Dismiss View Controller" executionBlock:^(KIFTestStep * step, NSError **error) {
+        if (!didDismiss) {
+            [[[[UIApplication sharedApplication] keyWindow] rootViewController] dismissViewControllerAnimated:YES completion:^{
+                completed = YES;
+            }];
+            didDismiss = YES;
+        }
+        
+        KIFTestWaitCondition(completed, error, @"Dismiss of view controller did not complete");
+        
+        return completed ? KIFTestStepResultSuccess : KIFTestStepResultWait;
+    }];
+    
+    return scrollStep;
+}
+
 @end

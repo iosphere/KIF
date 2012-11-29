@@ -513,14 +513,16 @@ static void releaseInstance()
 #define KIFLogBlankLine() KIFLog(@" ");
 #define KIFLogSeparator() KIFLog(@"---------------------------------------------------");
 
+- (NSString *)_logsDirectory {
+    NSString *logsDirectory = [NSTemporaryDirectory() stringByAppendingPathComponent:[[[NSProcessInfo processInfo] environment] objectForKey:@"KIF_SCREENSHOTS"]];
+    return [logsDirectory stringByDeletingLastPathComponent];
+}
+
 - (NSFileHandle *)_logFileHandleForWriting;
 {
     static NSFileHandle *fileHandle = nil;
-    if (!fileHandle) {
-        NSString *logsDirectory = [NSTemporaryDirectory() stringByAppendingPathComponent:[[[NSProcessInfo processInfo] environment] objectForKey:@"KIF_SCREENSHOTS"]];
-        logsDirectory = [logsDirectory stringByDeletingLastPathComponent];
-        
-        NSString *logFilePath = [logsDirectory stringByAppendingPathComponent:@"current.log"];
+    if (!fileHandle) {        
+        NSString *logFilePath = [[self _logsDirectory] stringByAppendingPathComponent:@"current.log"];
 
         if ([[NSFileManager defaultManager] fileExistsAtPath:logFilePath]) {
             [[NSFileManager defaultManager] removeItemAtPath:logFilePath error:nil];
@@ -547,6 +549,8 @@ static void releaseInstance()
     } else {
         KIFLog(@"BEGIN KIF TEST RUN: %d scenarios", self.scenarios.count);
     }
+    
+    [[[[NSProcessInfo processInfo] environment] description] writeToFile:[[self _logsDirectory] stringByAppendingPathComponent:@"environment.txt"] atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
 - (void)_logTestingDidFinish;

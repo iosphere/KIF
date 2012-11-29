@@ -17,6 +17,9 @@
     [navitem setLeftBarButtonItem:barButtonClone];
     [navBar setItems:@[  navitem ] animated:NO];
     NSString *title = [(id)[(id)barButtonClone view] title];
+    [navBar release];
+    [navitem release];
+    [barButtonClone release];
     NSAssert(title, @"Could not create title for UIBarButtonSystemItem: %i", item);
     return title;
 }

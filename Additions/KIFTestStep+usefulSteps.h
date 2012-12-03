@@ -23,6 +23,7 @@
  */
 + (KIFTestStep *)stepToSelectPickerViewRowWithTitle:(NSString *)title inComponent:(NSInteger)componentIndex;
 + (KIFTestStep *)stepToScrollToBottom;
++ (KIFTestStep *)stepToScrollToTop;
 + (KIFTestStep *)stepToEnterDateInFirstDatePicker:(NSDate*)date;
 + (KIFTestStep *)stepToResignFirstResponderWithAccessibilityLabel:(NSString *)label;
 + (KIFTestStep *)stepToTapCameraShutterButton;

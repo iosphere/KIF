@@ -214,13 +214,13 @@
             }];
 }
 
-+ (id)stepToScrollToTop {
++ (KIFTestStep *)stepToScrollToTop {
     KIFTestStep *scrollStep = nil;
     
     scrollStep = [KIFTestStep stepWithDescription:@"Scroll to top" executionBlock:^(KIFTestStep * step, NSError **error) {
         UIScrollView *scrollView = (UIScrollView *)[[[UIApplication sharedApplication] keyWindow] subviewWithKindOfClass:[UIScrollView class]];
         KIFTestCondition(scrollView, error, @"No scrollView view is present");
-        [scrollView setContentOffset:CGPointMake(0, 0) animated:YES];
+        [scrollView setContentOffset:CGPointMake(-1.0 * scrollView.contentInset.left, -1.0 * scrollView.contentInset.top) animated:YES];
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0.25, false);
         return KIFTestStepResultSuccess;
     }];
@@ -228,7 +228,7 @@
     return scrollStep;
 }
 
-+ (id)stepToScrollToBottom {
++ (KIFTestStep *)stepToScrollToBottom {
     KIFTestStep *scrollStep = nil;
 
     scrollStep = [KIFTestStep stepWithDescription:@"Scroll to bottom" executionBlock:^(KIFTestStep * step, NSError **error) {

@@ -39,4 +39,7 @@
 + (id)stepToTapBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item;
 + (id)stepToWaitForBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item;
 + (id)stepToDismissViewController;
+
++ (KIFTestStep *)stepToSetInterfaceOrientation:(UIInterfaceOrientation)orientation;
+
 @end

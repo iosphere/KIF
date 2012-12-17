@@ -14,6 +14,10 @@
 #import "UIApplication-KIFAdditions.h"
 #import "UIBarButtonItem+KIFAdditions.h"
 
+@interface UIDevice (private)
+- (void)setOrientation:(UIDeviceOrientation)orientation;
+@end
+
 @implementation KIFTestStep (usefulSteps)
 
 + (id)stepToTapRowInTableViewAtIndexPath:(NSIndexPath *)indexPath
@@ -387,6 +391,14 @@
         KIFTestWaitCondition(completed, error, @"Dismiss of view controller did not complete");
         
         return completed ? KIFTestStepResultSuccess : KIFTestStepResultWait;
+    }];
+}
+
++ (KIFTestStep *)stepToSetInterfaceOrientation:(UIInterfaceOrientation)orientation {
+    return [KIFTestStep stepWithDescription:@"Rotate to new Orientation" executionBlock:^(KIFTestStep *step, NSError **error) {
+        
+        [[UIDevice currentDevice] setOrientation:UIDeviceOrientationLandscapeLeft];
+        return KIFTestStepResultSuccess;
     }];
 }
 

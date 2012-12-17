@@ -34,6 +34,7 @@
 + (id)stepToScrollToCellContainingAccessibilityLabel:(NSString *)label atScrollPosition:(UITableViewScrollPosition)scrollPosition animated:(BOOL)animated;
 #if __IPHONE_OS_VERSION_MAX_ALLOWED > __IPHONE_5_1
 + (id)stepToTapCellInCollectionViewWithAccessibilityLabel:(NSString*)collectionViewLabel atIndexPath:(NSIndexPath *)indexPath;
++ (id)stepToScrollToCellInCollectionViewWithAccessibilityLabel:(NSString*)collectionViewLabel atIndexPath:(NSIndexPath *)indexPath;
 #endif
 
 + (id)stepToTapBarButtonItemWithSystemItem:(UIBarButtonSystemItem)item;

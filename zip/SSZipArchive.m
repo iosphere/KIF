@@ -46,7 +46,7 @@
 
 + (BOOL)unzipFileAtPath:(NSString *)path toDestination:(NSString *)destination overwrite:(BOOL)overwrite password:(NSString *)password error:(NSError **)error delegate:(id<SSZipArchiveDelegate>)delegate {
 	// Begin opening
-	zipFile zip = unzOpen((const char*)[path UTF8String]);	
+	zipFile zip = kif_unzOpen((const char*)[path UTF8String]);	
 	if (zip == NULL) {
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"failed to open zip file" forKey:NSLocalizedDescriptionKey];
 		if (error) {
@@ -56,10 +56,10 @@
 	}
 	
 	unz_global_info  globalInfo = {0ul, 0ul};
-	unzGetGlobalInfo(zip, &globalInfo);
+	kif_unzGetGlobalInfo(zip, &globalInfo);
 	
 	// Begin unzipping
-	if (unzGoToFirstFile(zip) != UNZ_OK) {
+	if (kif_unzGoToFirstFile(zip) != UNZ_OK) {
 		NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"failed to open first file in zip file" forKey:NSLocalizedDescriptionKey];
 		if (error) {
 			*error = [NSError errorWithDomain:@"SSZipArchiveErrorDomain" code:-2 userInfo:userInfo];
@@ -81,9 +81,9 @@
 	NSInteger currentFileNumber = 0;
 	do {
 		if ([password length] == 0) {
-			ret = unzOpenCurrentFile(zip);
+			ret = kif_unzOpenCurrentFile(zip);
 		} else {
-			ret = unzOpenCurrentFilePassword(zip, [password cStringUsingEncoding:NSASCIIStringEncoding]);
+			ret = kif_unzOpenCurrentFilePassword(zip, [password cStringUsingEncoding:NSASCIIStringEncoding]);
 		}
 		
 		if (ret != UNZ_OK) {
@@ -95,10 +95,10 @@
 		unz_file_info fileInfo;
 		memset(&fileInfo, 0, sizeof(unz_file_info));
 		
-		ret = unzGetCurrentFileInfo(zip, &fileInfo, NULL, 0, NULL, 0, NULL, 0);
+		ret = kif_unzGetCurrentFileInfo(zip, &fileInfo, NULL, 0, NULL, 0, NULL, 0);
 		if (ret != UNZ_OK) {
 			success = NO;
-			unzCloseCurrentFile(zip);
+			kif_unzCloseCurrentFile(zip);
 			break;
 		}
 		
@@ -109,7 +109,7 @@
 		}
         
 		char *filename = (char *)malloc(fileInfo.size_filename + 1);
-		unzGetCurrentFileInfo(zip, &fileInfo, filename, fileInfo.size_filename + 1, NULL, 0, NULL, 0);
+		kif_unzGetCurrentFileInfo(zip, &fileInfo, filename, fileInfo.size_filename + 1, NULL, 0, NULL, 0);
 		filename[fileInfo.size_filename] = '\0';
         
         //
@@ -169,8 +169,8 @@
             [directoriesModificationDates addObject: [NSDictionary dictionaryWithObjectsAndKeys:fullPath, @"path", modDate, @"modDate", nil]];
 
         if ([fileManager fileExistsAtPath:fullPath] && !isDirectory && !overwrite) {
-			unzCloseCurrentFile(zip);
-			ret = unzGoToNextFile(zip);
+			kif_unzCloseCurrentFile(zip);
+			ret = kif_unzGoToNextFile(zip);
 			continue;
 		}
         
@@ -178,7 +178,7 @@
         {
             FILE *fp = fopen((const char*)[fullPath UTF8String], "wb");
             while (fp) {
-                int readBytes = unzReadCurrentFile(zip, buffer, 4096);
+                int readBytes = kif_unzReadCurrentFile(zip, buffer, 4096);
 
                 if (readBytes > 0) {
                     fwrite(buffer, readBytes, 1, fp );
@@ -212,7 +212,7 @@
             NSMutableString* destinationPath = [NSMutableString string];
             
             int bytesRead = 0;
-            while((bytesRead = unzReadCurrentFile(zip, buffer, 4096)) > 0)
+            while((bytesRead = kif_unzReadCurrentFile(zip, buffer, 4096)) > 0)
             {
                 buffer[bytesRead] = 0;
                 [destinationPath appendString:[NSString stringWithUTF8String:(const char*)buffer]];
@@ -232,8 +232,8 @@
             }
         }
 		
-		unzCloseCurrentFile( zip );
-		ret = unzGoToNextFile( zip );
+		kif_unzCloseCurrentFile( zip );
+		ret = kif_unzGoToNextFile( zip );
 		
 		// Message delegate
 		if ([delegate respondsToSelector:@selector(zipArchiveDidUnzipFileAtIndex:totalFiles:archivePath:fileInfo:)]) {
@@ -245,7 +245,7 @@
 	} while(ret == UNZ_OK && UNZ_OK != UNZ_END_OF_LIST_OF_FILE);
 	
 	// Close
-	unzClose(zip);
+	kif_unzClose(zip);
 	
 	// The process of decompressing the .zip archive causes the modification times on the folders
     // to be set to the present time. So, when we are done, they need to be explicitly set.
@@ -311,7 +311,7 @@
 
 - (BOOL)open {    
 	NSAssert((_zip == NULL), @"Attempting open an archive which is already open");
-	_zip = zipOpen([_path UTF8String], APPEND_STATUS_CREATE);
+	_zip = kif_zipOpen([_path UTF8String], APPEND_STATUS_CREATE);
 	return (NULL != _zip);
 }
 
@@ -337,17 +337,17 @@
 		return NO;
 	}
 
-	zipOpenNewFileInZip(_zip, [[path lastPathComponent] UTF8String], NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED,
+	kif_zipOpenNewFileInZip(_zip, [[path lastPathComponent] UTF8String], NULL, NULL, 0, NULL, 0, NULL, Z_DEFLATED,
 						Z_DEFAULT_COMPRESSION);
 
 	void *buffer = malloc(CHUNK);
 	unsigned int len = 0;
 	while (!feof(input)) {
 		len = (unsigned int) fread(buffer, 1, CHUNK, input);
-		zipWriteInFileInZip(_zip, buffer, len);
+		kif_zipWriteInFileInZip(_zip, buffer, len);
 	}
 
-	zipCloseFileInZip(_zip);
+	kif_zipCloseFileInZip(_zip);
 	free(buffer);
 	return YES;
 }
@@ -363,18 +363,18 @@
     zip_fileinfo zipInfo = {{0,0,0,0,0,0},0,0,0};
     [self zipInfo:&zipInfo setDate:[NSDate date]];
 
-	zipOpenNewFileInZip(_zip, [filename UTF8String], &zipInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
+	kif_zipOpenNewFileInZip(_zip, [filename UTF8String], &zipInfo, NULL, 0, NULL, 0, NULL, Z_DEFLATED, Z_DEFAULT_COMPRESSION);
 
-    zipWriteInFileInZip(_zip, data.bytes, (unsigned int)data.length);
+    kif_zipWriteInFileInZip(_zip, data.bytes, (unsigned int)data.length);
 
-	zipCloseFileInZip(_zip);
+	kif_zipCloseFileInZip(_zip);
 	return YES;
 }
 
 
 - (BOOL)close {    
 	NSAssert((_zip != NULL), @"[SSZipArchive] Attempting to close an archive which was never opened");
-	zipClose(_zip, NULL);
+	kif_zipClose(_zip, NULL);
 	return YES;
 }
 

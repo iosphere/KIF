@@ -70,7 +70,7 @@ MAKE_CATEGORIES_LOADABLE(UITouch_KIFAdditions)
     
     _window = [window retain];
     _view = [hitTestView retain];
-    _gestureView = [hitTestView retain];
+    //_gestureView = [hitTestView retain];
     _phase = UITouchPhaseBegan;
     _touchFlags._firstTouchForView = 1;
     _touchFlags._isTap = 1;
